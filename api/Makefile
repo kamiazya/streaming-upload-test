@@ -1,4 +1,4 @@
-.PHONY: lint format
+.PHONY: lint format test
 
 lint:
 	# poetry run mypy app
@@ -11,3 +11,6 @@ format:
 	poetry run autopep8 -ivr app
 	poetry run black app
 	poetry run isort --force-single-line-imports app
+
+test:
+	poetry run pytest
