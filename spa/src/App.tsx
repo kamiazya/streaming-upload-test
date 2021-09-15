@@ -8,6 +8,16 @@ interface UploadResult {
   minSize: number;
 }
 
+export interface InvalidSchema {
+  index: number;
+  data: any;
+  errors: {
+    loc: string[];
+    msg: string;
+    type: string;
+  }[];
+}
+
 export const App: VFC = () => {
   const [file, setFile] = useState<File | null>(null);
   const onChangeFile = useCallback(
@@ -22,16 +32,37 @@ export const App: VFC = () => {
 
   const upload = useCallback(() => {
     setUploading(true);
-    fetch("/api/", { method: "POST", body: file })
-      .then((res) => res.json())
-      .then((result) => setResult(result))
+    fetch("/api/", {
+      method: "POST",
+      body: file,
+      headers: { "Content-Type": "application/json" },
+      // @ts-ignore See https://web.dev/fetch-upload-streaming/
+      allowHTTP1ForStreamingUpload: true,
+    })
+      .then(async (res) => {
+        const result = await res.json();
+        switch (res.status) {
+          case 200:
+            setResult(result);
+            break;
+          case 400:
+            console.log(result);
+            break;
+          default:
+            break;
+        }
+      })
       .finally(() => setUploading(false));
   }, [file, setResult, setUploading]);
 
   return (
     <>
-      <input type="file" onChange={onChangeFile} />
-      <button disabled={uploading || !file} onClick={upload}>
+      <input
+        type="file"
+        disabled={uploading}
+        onChange={onChangeFile}
+      />
+      <button disabled={uploading} onClick={upload}>
         Upload
       </button>
 

@@ -4,7 +4,7 @@ services:
     build:
       context: ./api
     volumes:
-      - ./api/app:/app:ro
+      - ./api/src:/app:ro
   proxy:
     image: nginx:1.21
     ports:

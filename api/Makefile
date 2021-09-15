@@ -1,16 +1,16 @@
 .PHONY: lint format test
 
 lint:
-	# poetry run mypy app
-	poetry run flake8 --show-source app
-	poetry run poetry run black app --check
-	poetry run isort --force-single-line-imports --check app
+	poetry run mypy src
+	poetry run flake8 --show-source src
+	poetry run poetry run black src --check
+	poetry run isort --force-single-line-imports --check src
 
 
 format:
-	poetry run autopep8 -ivr app
-	poetry run black app
-	poetry run isort --force-single-line-imports app
+	poetry run autopep8 -ivr src
+	poetry run black src
+	poetry run isort --force-single-line-imports src
 
 test:
 	poetry run pytest
