@@ -1,7 +1,7 @@
 import pytest
-from pydantic import BaseModel, ValidationError
+from pydantic import BaseModel
 
-from src.validator import JDJsonValidator
+from src.validator import InvalidSchemaException, LDJsonValidator
 
 
 class Item(BaseModel):
@@ -10,41 +10,45 @@ class Item(BaseModel):
 
 
 @pytest.fixture
-def validator() -> JDJsonValidator:
-    return JDJsonValidator(Item)
+def validator() -> LDJsonValidator:
+    return LDJsonValidator(Item)
 
 
 @pytest.mark.asyncio
-async def test_valid_data(validator: JDJsonValidator):
-    await validator.write(b'{"hoge": "test", "fuga": 1}\n')
+async def test_valid_data(validator: LDJsonValidator):
+    validator.write(b'{"hoge": "test", "fuga": 1}\n')
     assert validator._buffer == b''
 
 
 @pytest.mark.asyncio
-async def test_invalid_data(validator: JDJsonValidator):
-    with pytest.raises(ValidationError):
-        await validator.write(b'{"hoge": "test"}\n')
+async def test_invalid_data(validator: LDJsonValidator):
+    with pytest.raises(InvalidSchemaException):
+        validator.write(b'{"hoge": "test"}\n')
 
 
 @pytest.mark.asyncio
-async def test_write_some_chunk(validator: JDJsonValidator):
-    await validator.write(b'{"hoge": "test1", "fuga": 1}\n{"hoge": "test1", "fuga": 2}\n')
+async def test_write_some_chunk(validator: LDJsonValidator):
+    validator.write(
+        b'{"hoge": "test1", "fuga": 1}\n{"hoge": "test1", "fuga": 2}\n')
     assert validator._buffer == b''
-    await validator.write(b'{"hoge": "test2", "fuga": 3}\n{"hoge": "test2", "fuga": 4}\n')
+    validator.write(
+        b'{"hoge": "test2", "fuga": 3}\n{"hoge": "test2", "fuga": 4}\n')
     assert validator._buffer == b''
 
 
 @pytest.mark.asyncio
-async def test_write_with_small_chunk(validator: JDJsonValidator):
-    await validator.write(b'{"hoge": "test1')
+async def test_write_with_small_chunk(validator: LDJsonValidator):
+    validator.write(b'{"hoge": "test1')
     assert validator._buffer == b'{"hoge": "test1'
-    await validator.write(b'", "fuga"')
+    validator.write(b'", "fuga"')
     assert validator._buffer == b'{"hoge": "test1", "fuga"'
-    await validator.write(b': 1}\n')
+    validator.write(b': 1}\n')
     assert validator._buffer == b''
 
 
 @pytest.mark.asyncio
-async def test_write_with_large_chunk(validator: JDJsonValidator):
-    await validator.write(b'{"hoge": "test1", "fuga": 1}\n{"hoge": "test1", "fuga": 2}\n{"hoge": "test2"')
+async def test_write_with_large_chunk(validator: LDJsonValidator):
+    validator.write(
+        b'{"hoge": "test1", "fuga": 1}\n'
+        b'{"hoge": "test1", "fuga": 2}\n{"hoge": "test2"')
     assert validator._buffer == b'{"hoge": "test2"'

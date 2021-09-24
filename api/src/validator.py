@@ -1,19 +1,20 @@
 # from io import BinaryIO
-from typing import Any, Dict, List, Type
+from typing import Any
+from typing import Dict
+from typing import List
+from typing import Type
 
 import orjson
-from pydantic import BaseModel, ValidationError
+from pydantic import BaseModel
+from pydantic import ValidationError
 
 
 class InvalidSchemaException(Exception):
     line: int
     data: Dict[str, Any]
-    errors:  List[Dict[str, Any]]
+    errors: List[Dict[str, Any]]
 
-    def __init__(self,
-                 line: int,
-                 data: Dict[str, Any],
-                 errors:  List[Dict[str, Any]]) -> None:
+    def __init__(self, line: int, data: Dict[str, Any], errors: List[Dict[str, Any]]) -> None:
         self.line = line
         self.data = data
         self.errors = errors
@@ -26,7 +27,7 @@ class InvalidSchemaException(Exception):
         }
 
 
-class JDJsonValidator:
+class LDJsonValidator:
     def __init__(self, model_cls: Type[BaseModel]) -> None:
         self.model_cls = model_cls
         self._buffer = bytes()
@@ -38,7 +39,7 @@ class JDJsonValidator:
                 chunk = self._buffer + chunk
                 self._buffer = bytes()
             for line in chunk.splitlines(True):
-                if line.endswith(b'\n'):
+                if line.endswith(b"\n"):
                     data = orjson.loads(line)
                     self.model_cls(**data)
                 else:

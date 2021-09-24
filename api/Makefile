@@ -13,4 +13,4 @@ format:
 	poetry run isort --force-single-line-imports src
 
 test:
-	poetry run pytest
+	PYTHONPATH=./src poetry run pytest

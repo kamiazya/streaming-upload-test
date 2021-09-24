@@ -1,4 +1,4 @@
-.PHONY: setup create_sample_json
+.PHONY: setup lint_api lint format test create_sample_json
 
 setup:
 	poetry config virtualenvs.create false

@@ -1,8 +1,10 @@
 from fastapi import FastAPI
-from fastapi import Request, Response
+from fastapi import Request
+from fastapi import Response
 from pydantic import BaseModel
 
-from validator import JDJsonValidator, InvalidSchemaException
+from validator import InvalidSchemaException
+from validator import LDJsonValidator
 
 app = FastAPI()
 
@@ -15,11 +17,12 @@ class Item(BaseModel):
 @app.post("/")
 async def upload(request: Request, response: Response):
     chunk_sizes = []
-    validator = JDJsonValidator(Item)
+    validator = LDJsonValidator(Item)
     try:
         async for chunk in request.stream():
             validator.write(chunk)
-            chunk_sizes.append(len(chunk))
+            if chunk_size := len(chunk):
+                chunk_sizes.append(chunk_size)
 
         return {
             "chunkSizes": chunk_sizes,
