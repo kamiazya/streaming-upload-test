@@ -4,6 +4,7 @@ import sys
 import json
 from faker import Faker
 
+
 def write_fake_data(file: FileIO, size: int = 1000):
     fake = Faker()
     while True:
@@ -16,6 +17,7 @@ def write_fake_data(file: FileIO, size: int = 1000):
         }) + '\n')
         if (size := size - 1) == 0:
             break
+
 
 if __name__ == "__main__":
     filepath = sys.argv[1]

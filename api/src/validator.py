@@ -10,7 +10,10 @@ class InvalidSchemaException(Exception):
     data: Dict[str, Any]
     errors:  List[Dict[str, Any]]
 
-    def __init__(self, line: int, data: Dict[str, Any], errors:  List[Dict[str, Any]]) -> None:
+    def __init__(self,
+                 line: int,
+                 data: Dict[str, Any],
+                 errors:  List[Dict[str, Any]]) -> None:
         self.line = line
         self.data = data
         self.errors = errors

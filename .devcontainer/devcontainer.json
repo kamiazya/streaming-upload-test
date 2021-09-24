@@ -1,0 +1,29 @@
+{
+  "name": "App",
+  "dockerComposeFile": [
+    "../docker-compose.yaml",
+    "./docker-compose.yaml"
+  ],
+  "service": "workspace",
+  "forwardPorts": [
+    8000
+  ],
+  "workspaceFolder": "/",
+  "extensions": [
+    "EditorConfig.EditorConfig",
+    "magicstack.magicpython",
+    "ms-python.python",
+    "ms-python.vscode-pylance"
+  ],
+  "settings": {
+    "python.pythonPath": "/usr/local/bin/python",
+    "python.linting.enabled": true,
+    "python.linting.pylintEnabled": true,
+    "python.linting.flake8Enabled": true,
+    "python.formatting.blackPath": "/usr/local/py-utils/bin/black",
+    "python.linting.flake8Path": "/usr/local/py-utils/bin/flake8",
+    "python.linting.mypyPath": "/usr/local/py-utils/bin/mypy"
+  },
+  "postCreateCommand": "make setup",
+  "remoteUser": "vscode"
+}

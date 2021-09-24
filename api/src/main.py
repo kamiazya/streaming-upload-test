@@ -11,6 +11,7 @@ class Item(BaseModel):
     hoge: str
     fuga: int
 
+
 @app.post("/")
 async def upload(request: Request, response: Response):
     chunk_sizes = []

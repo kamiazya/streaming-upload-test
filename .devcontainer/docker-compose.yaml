@@ -1,0 +1,16 @@
+version: "3.9"
+
+services:
+  workspace:
+    build:
+      context: .devcontainer
+      dockerfile: Dockerfile
+      args:
+        # [Choice] Python version
+        VARIANT: 3.9
+        # [Choice] Node.js version: none, lts/*, 16, 14, 12, 10
+        NODE_VERSION: 16
+        # On Linux, you may need to update USER_UID and USER_GID below if not your local UID is not 1000.
+        USER_UID: 1000
+        USER_GID: 1000
+    command: sleep infinity
